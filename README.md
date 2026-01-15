@@ -121,6 +121,32 @@ Please see https://github.com/facebook/ThreatExchange/tree/main/pdq#matching
 Note that outputs from the C++ implementation's example binary and the `pdqhasher` binary provided here may not return hashes that are exactly the same due to
 differences in resizing libraries. This is expected, see https://github.com/facebook/ThreatExchange/tree/main/pdq#hashing.
 
+## Benchmark
+
+```
+❯ go run ./cmd/benchmark --workers 32 --with-resize --duration 10
+CPU:             AMD RYZEN AI MAX+ 395 w/ Radeon 8060S
+CPU Cores:       32
+Image Directory: testdata/images
+Duration:        10s
+Workers:         32
+With Resize:     true
+With I/O:        false
+
+Results
+=======
+
+Total Time:       10.011804696s
+Total Hashes:     27999
+Errors:           0
+
+Throughput:       2796.6 hashes/sec
+Avg Time/Hash:    0.36 ms
+
+Per Worker:       875.0 hashes
+Per Worker/Sec:   87.4 hashes/sec
+```
+
 ## References
 
 - [PDQ Algorithm (C++ Reference)](https://github.com/facebook/ThreatExchange/tree/main/pdq)
