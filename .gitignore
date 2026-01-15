@@ -1,0 +1,28 @@
+# Test data (downloaded images for benchmarking)
+testdata/
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go test cache
+*.test
+*.out
+
+# Binaries
+/pdqhasher
+/helper
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
