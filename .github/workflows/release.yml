@@ -25,6 +25,13 @@ jobs:
           go build ./...
           go vet ./...
 
+      - name: Verify tag still points at the pushed commit
+        # The sanity gate above ran against the event's SHA. --verify-tag only
+        # checks the tag exists, so assert it has not been moved before
+        # creating a release against it.
+        run: |
+          test "$(git ls-remote origin "refs/tags/${GITHUB_REF_NAME}" | awk '{print $1}')" = "${GITHUB_SHA}"
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
