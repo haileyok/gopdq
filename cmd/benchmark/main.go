@@ -182,9 +182,25 @@ func runBenchmark(ctx context.Context, cmd *cli.Command) error {
 				var err error
 
 				if withIO {
-					// Hash from file
+					// Hash from file. Decode and apply the resize flag here, since
+					// HashFromFile does not resize on its own -- otherwise
+					// --with-resize would be silently ignored in the I/O benchmark.
 					imagePath := imagePaths[idx%len(imagePaths)]
-					_, err = pdq.HashFromFile(imagePath)
+					file, openErr := os.Open(imagePath)
+					if openErr != nil {
+						err = openErr
+					} else {
+						img, _, decodeErr := image.Decode(file)
+						file.Close()
+						if decodeErr != nil {
+							err = decodeErr
+						} else {
+							if withResize {
+								img = helpers.ResizeIfNeeded(img)
+							}
+							_, err = pdq.HashFromImage(img)
+						}
+					}
 				} else {
 					// Hash from pre-decoded image
 					imgWithSize := preloadedImages[idx%len(preloadedImages)]
