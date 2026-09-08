@@ -1,5 +1,6 @@
-# Test data (downloaded images for benchmarking)
-testdata/
+# Test data (downloaded images for benchmarking); committed golden-vector
+# test images live in testdata/golden/ and must stay tracked
+testdata/images/
 
 # Go build artifacts
 *.exe

@@ -18,12 +18,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version: "1.26"
 
       - name: Verify
         run: |
           go build ./...
           go vet ./...
+          go test ./...
 
       - name: Verify tag still points at the built commit
         # The sanity gate above ran against the checked-out commit. --verify-tag
