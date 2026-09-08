@@ -34,6 +34,9 @@ func main() {
 
 			// decode the image so we can resize if needed
 			img, _, err := image.Decode(file)
+			if err != nil {
+				return fmt.Errorf("failed to decode image at %s: %w", fileName, err)
+			}
 
 			readDuration := time.Since(readStart)
 

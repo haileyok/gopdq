@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"image/color"
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
@@ -126,12 +127,15 @@ func loadFloatLumaFromImage(img image.Image) ([]float32, int, int) {
 
 	for row := range numRows {
 		for col := range numCols {
-			// purposefully discarding alpha
-			r, g, b, _ := img.At(bounds.Min.X+col, bounds.Min.Y+row).RGBA()
+			// NOTE: color.Color.RGBA() returns alpha-premultiplied values; convert to
+			// non-premultiplied NRGBA so that alpha is discarded without darkening the
+			// RGB channels of semi-transparent pixels. See the reference C++ PDQ
+			// implementation, which reads straight (non-premultiplied) RGB channels.
+			c := color.NRGBAModel.Convert(img.At(bounds.Min.X+col, bounds.Min.Y+row)).(color.NRGBA)
 
-			r8 := float32(r >> 8)
-			g8 := float32(g >> 8)
-			b8 := float32(b >> 8)
+			r8 := float32(c.R)
+			g8 := float32(c.G)
+			b8 := float32(c.B)
 
 			luma[row*numCols+col] = LumaFromRCoeff*r8 + LumaFromGCoeff*g8 + LumaFromBCoeff*b8
 		}
