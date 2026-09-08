@@ -88,6 +88,13 @@ func HashFromImage(img image.Image) (*HashResult, error) {
 	hash, quality := hash256FromFloatLuma(luma, fullBuffer2, numRows, numCols)
 	hashTime := time.Since(hashStart)
 
+	// The reference implementation signals failure for images below the
+	// minimum hashable dimension (it cannot produce a hash); surface that as
+	// an error rather than silently returning an empty hash.
+	if hash == "" {
+		return nil, fmt.Errorf("image dimensions (%dx%d) are below the minimum hashable dimension (%d)", numCols, numRows, MinHashableDim)
+	}
+
 	return &HashResult{
 		Hash:                  hash,
 		Quality:               quality,
