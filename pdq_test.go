@@ -27,13 +27,13 @@ var goldenVectors = []struct {
 	// JPEG decoder differences across Go toolchains. q0003 is a very
 	// low-quality image (PDQ quality ~3) whose hash legitimately shifts a
 	// few bits between decoders: observed distance 16 on go1.26 and 18 on
-	// go1.25 with otherwise-identical code.
+	// go1.25 with otherwise-identical code. 20 = worst observed + 2 bits.
 	tol int
 }{
 	{"misc-images/c.png", "e64cc9d91e623842f8d1f1d9a398e78c9f199a3bd87924f2b7e11e0bf061b064", 0},
 	{"misc-images/small.jpg", "0007001f003f003f007f00ff00ff00ff01ff01ff01ff03ff03ff03ff03ff03ff", 0},
 	{"misc-images/wee.jpg", "6227401f601ff4ccafcc9fad4b0d95d371a2eb7265a3285234d228ca94deeb2d", 0},
-	{"labelme-subset/q0003.jpg", "54a977c221d14c1c43ba5e6e21d4a13989a3553f1462611cbb85fda7be83b677", 24},
+	{"labelme-subset/q0003.jpg", "54a977c221d14c1c43ba5e6e21d4a13989a3553f1462611cbb85fda7be83b677", 20},
 	{"labelme-subset/q0004.jpg", "992d44af36d69e6ca6b812585928bac11def254ef5398c6d07466c9abcc65b92", 0},
 	{"labelme-subset/q0122.jpg", "cfb2009ddd21c6dab0046a7745b5984757a8a4535b3377aea2591d32b33ff940", 0},
 	{"labelme-subset/q0291.jpg", "a0fe94f1e5cc1cc8dd855948498dc9243f7ca27336f036d7f212b74bc103c9a7", 0},
