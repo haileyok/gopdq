@@ -25,12 +25,15 @@ jobs:
           go build ./...
           go vet ./...
 
-      - name: Verify tag still points at the pushed commit
-        # The sanity gate above ran against the event's SHA. --verify-tag only
-        # checks the tag exists, so assert it has not been moved before
-        # creating a release against it.
+      - name: Verify tag still points at the built commit
+        # The sanity gate above ran against the checked-out commit. --verify-tag
+        # only checks the tag exists, so fetch the tag and assert it still peels
+        # to that commit before creating a release against it. Fetching to a
+        # temporary ref and comparing to HEAD avoids ls-remote's ^{} quirks and
+        # works for both lightweight and annotated tags.
         run: |
-          test "$(git ls-remote origin "refs/tags/${GITHUB_REF_NAME}" | awk '{print $1}')" = "${GITHUB_SHA}"
+          git fetch origin "+refs/tags/${GITHUB_REF_NAME}:refs/tags/pdq-release-verify" --no-tags
+          test "$(git rev-parse "refs/tags/pdq-release-verify^{commit}")" = "$(git rev-parse HEAD)"
 
       - name: Create GitHub Release
         env:
