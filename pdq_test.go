@@ -11,7 +11,7 @@ import (
 // Golden vectors from Meta's reference PDQ implementation (ThreatExchange,
 // pdq/python/pdqhashing/tests/pdq_test.py, BSD-licensed). Test images are
 // redistributed from ThreatExchange's pdq/data with attribution (see
-// testdata/images/LICENSE).
+// testdata/golden/LICENSE).
 //
 // The reference test asserts hamming distance <= 16 rather than exact
 // equality, because JPEG decoder differences (libjpeg vs Go's image/jpeg)
@@ -48,7 +48,7 @@ var goldenVectors = []struct {
 func TestGoldenVectors(t *testing.T) {
 	for _, v := range goldenVectors {
 		t.Run(v.name, func(t *testing.T) {
-			path := filepath.Join("testdata", "images", v.name)
+			path := filepath.Join("testdata", "golden", v.name)
 			result, err := HashFromFile(path)
 			if err != nil {
 				t.Fatalf("hashing %s: %v", path, err)
@@ -68,7 +68,7 @@ func TestGoldenVectors(t *testing.T) {
 // TestHashFromImageMatchesHashFromFile verifies the two entry points agree.
 func TestHashFromImageMatchesHashFromFile(t *testing.T) {
 	for _, v := range goldenVectors {
-		path := filepath.Join("testdata", "images", v.name)
+		path := filepath.Join("testdata", "golden", v.name)
 		fromFile, err := HashFromFile(path)
 		if err != nil {
 			t.Fatalf("HashFromFile(%s): %v", path, err)
