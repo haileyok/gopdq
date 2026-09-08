@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Verify
+        run: |
+          go build ./...
+          go vet ./...
+
+      - name: Verify tag still points at the built commit
+        # The sanity gate above ran against the checked-out commit. --verify-tag
+        # only checks the tag exists, so fetch the tag and assert it still peels
+        # to that commit before creating a release against it. Fetching to a
+        # temporary ref and comparing to HEAD avoids ls-remote's ^{} quirks and
+        # works for both lightweight and annotated tags.
+        run: |
+          git fetch origin "+refs/tags/${GITHUB_REF_NAME}:refs/tags/pdq-release-verify" --no-tags
+          test "$(git rev-parse "refs/tags/pdq-release-verify^{commit}")" = "$(git rev-parse HEAD)"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag
